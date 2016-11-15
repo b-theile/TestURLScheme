@@ -39,7 +39,8 @@ namespace TestURLScheme
         private void StartTestURLExecute()
         {
             string urlString = "mru4urequest://mru/" + System.Net.WebUtility.UrlEncode(MainViewModel.xmlSendData);
-            Device.OpenUri(new Uri(urlString));
+            //Device.OpenUri(new Uri(urlString));
+            MessagingCenter.Send<string>(urlString, "mru4urequest");
         }
     }
 }

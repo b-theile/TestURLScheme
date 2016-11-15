@@ -12,16 +12,19 @@ using Xamarin.Forms.Platform.Android;
 
 namespace TestURLScheme.Droid
 {
-    [Activity(Label = "TestURLScheme", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, LaunchMode =LaunchMode.SingleTask)]
+    [Activity(Label = "TestURLScheme", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 
-    [IntentFilter( new[] { Intent.ActionView },
-        DataScheme = "mru4uresponse",
-        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable })]
+    //[IntentFilter(new[] { Intent.ActionView },
+    //    DataScheme = "mru4uresponse",
+    //    Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable })]
+    
 
     public class MainActivity : FormsAppCompatActivity
     {
+        private static int MRU_REQUEST = 1543;
+
         protected override void OnCreate(Bundle bundle)
-        {
+        {           
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
@@ -34,15 +37,34 @@ namespace TestURLScheme.Droid
             {
                 MessagingCenter.Send<string>(Intent.Data.EncodedPath, "mru4uresponse");
             }
+
+            MessagingCenter.Subscribe<string>(this, "mru4urequest", urlString =>
+            {
+                Intent intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(urlString));
+                StartActivityForResult(intent, MRU_REQUEST);
+            });
         }
 
         protected override void OnNewIntent(Intent intent)
         {
+            base.OnNewIntent(intent);
             if (intent.Data != null)
             {
                 MessagingCenter.Send<string>(intent.Data.EncodedPath, "mru4uresponse");
+            }            
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == MRU_REQUEST)
+            {
+                if (data?.Data != null)
+                {
+                    MessagingCenter.Send<string>(data.Data.EncodedSchemeSpecificPart, "mru4uresponse");
+                }
             }
-            base.OnNewIntent(intent);
         }
     }
 }

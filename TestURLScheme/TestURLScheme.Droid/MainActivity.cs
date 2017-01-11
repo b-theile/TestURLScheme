@@ -1,22 +1,24 @@
 ﻿using System;
 
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Xamarin.Forms;
-using Android.Content;
-using Android.Net;
+using Xamarin.Forms.Platform.Android;
 
 namespace TestURLScheme.Droid
 {
-    [Activity(Label = "TestURLScheme", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, LaunchMode =LaunchMode.SingleTop)]
-    [IntentFilter(new[] { Android.Content.Intent.ActionView },
+    [Activity(Label = "TestURLScheme", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, LaunchMode =LaunchMode.SingleTask)]
+
+    [IntentFilter( new[] { Intent.ActionView },
         DataScheme = "mru4uresponse",
-        Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable })]
+
+    public class MainActivity : FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
         {
@@ -25,22 +27,22 @@ namespace TestURLScheme.Droid
 
             base.OnCreate(bundle);
 
-            global::Xamarin.Forms.Forms.Init(this, bundle);
+            Forms.Init(this, bundle);
             LoadApplication(new App());
 
             if (Intent.Data != null)
             {
                 MessagingCenter.Send<string>(Intent.Data.EncodedPath, "mru4uresponse");
             }
+        }
 
-            MessagingCenter.Subscribe<string>(this, "mru4urequest", (urlString) => 
+        protected override void OnNewIntent(Intent intent)
+        {
+            if (intent.Data != null)
             {
-                Intent intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(urlString));
-                //Intent intent = new Intent(Intent.ActionSend, Android.Net.Uri.Parse(urlString));
-                //Forms.Context.StartActivity(Intent.CreateChooser(intent, "Messungen bereitstellen"));
-                Forms.Context.StartActivity(intent);
-                this.Finish();
-            });
+                MessagingCenter.Send<string>(intent.Data.EncodedPath, "mru4uresponse");
+            }
+            base.OnNewIntent(intent);
         }
     }
 }

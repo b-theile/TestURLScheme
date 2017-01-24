@@ -45,14 +45,14 @@ namespace TestURLScheme.Droid
             });
         }
 
-        protected override void OnNewIntent(Intent intent)
-        {
-            base.OnNewIntent(intent);
-            if (intent.Data != null)
-            {
-                MessagingCenter.Send<string>(intent.Data.EncodedPath, "mru4uresponse");
-            }            
-        }
+        //protected override void OnNewIntent(Intent intent)
+        //{
+        //    base.OnNewIntent(intent);
+        //    if (intent.Data != null)
+        //    {
+        //        MessagingCenter.Send<string>(intent.Data.EncodedPath, "mru4uresponse");
+        //    }            
+        //}
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {

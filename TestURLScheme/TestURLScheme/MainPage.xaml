@@ -1,19 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TestURLScheme.MainPage">
-  
-  <Label Text="{Binding MainText}" VerticalOptions="Center" HorizontalOptions="Center" />
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TestURLScheme.MainPage"
+    Title="MRU Exchange Test">
 
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <Button Grid.Row="0" Text="TestURL" HorizontalOptions="FillAndExpand" Command="{Binding StartTestURL}" />
-    <Editor Grid.Row="1" Text="{Binding XMLData}" />
-    
-  </Grid>
-  
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Row="0" Grid.Column="0" Text="URL" HorizontalOptions="FillAndExpand" Command="{Binding StartTestURLCommand}" />
+        <Button Grid.Row="0" Grid.Column="1" Text="File" HorizontalOptions="FillAndExpand" Command="{Binding StartTestFileExchangeCommand}" />
+        <Editor Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding XMLData}" />
+    </Grid>
 </ContentPage>

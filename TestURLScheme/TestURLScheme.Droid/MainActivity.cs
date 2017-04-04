@@ -1,12 +1,10 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+using Android.Net;
 using Android.OS;
+using Java.IO;
+using Java.Lang;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -14,10 +12,13 @@ namespace TestURLScheme.Droid
 {
     [Activity(Label = "TestURLScheme", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 
-    //[IntentFilter(new[] { Intent.ActionView },
-    //    DataScheme = "mru4uresponse",
-    //    Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable })]
-    
+    [IntentFilter(
+        new[] { Intent.ActionView },
+        Categories = new[] { Intent.CategoryDefault },
+        DataScheme = "content",
+        DataMimeType = "*/*",
+        DataPathPatterns = new[] { ".*\\.ZIVAPP" },
+        DataHost = "*")]
 
     public class MainActivity : FormsAppCompatActivity
     {
@@ -35,23 +36,72 @@ namespace TestURLScheme.Droid
 
             if (Intent.Data != null)
             {
-                MessagingCenter.Send<string>(Intent.Data.EncodedPath, "mru4uresponse");
+                if (Intent.Data.LastPathSegment.Contains("ZIVAPP"))
+                {
+                    string message = GetMessageFromUri(Intent.Data);
+                    MessagingCenter.Send<string>(message, "fileresponse");
+                }
+                //else
+                //{
+                //    MessagingCenter.Send<string>(Intent.Data.EncodedPath, "mru4uresponse");
+                //}                    
             }
 
             MessagingCenter.Subscribe<string>(this, "mru4urequest", urlString =>
             {
-                Intent intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(urlString));
+                Intent intent = new Intent(Intent.ActionView, Uri.Parse(urlString));
                 StartActivityForResult(intent, MRU_REQUEST);
+            });
+
+            MessagingCenter.Subscribe<string>(this, "filerequest", urlString =>
+            {
+                File zivPath = new File(FilesDir.AbsolutePath, "ZIV");
+                File file = new File(zivPath, "exchange.MRUAPP");
+
+                if (!zivPath.IsDirectory)
+                    zivPath.Mkdir();
+
+                try
+                {
+                    FileOutputStream fos = new FileOutputStream(file);
+
+                    if (!file.Exists())
+                    {
+                        file.CreateNewFile();
+                    }
+
+                    byte[] contentInBytes = System.Text.Encoding.ASCII.GetBytes(urlString);
+
+                    fos.Write(contentInBytes);
+                    fos.Flush();
+                    fos.Close();
+                }
+                catch (IOException e)
+                {
+                    e.PrintStackTrace();
+                }
+
+                Uri apkURI = Android.Support.V4.Content.FileProvider.GetUriForFile(Forms.Context.ApplicationContext, "com.testexchange.provider", file);
+
+                Intent intent = new Intent(Intent.ActionView);
+                intent.SetDataAndType(apkURI, "MRUAPP");
+                intent.SetFlags(ActivityFlags.GrantReadUriPermission);
+                StartActivity(intent);
             });
         }
 
-        protected override void OnNewIntent(Intent intent)
+        private string GetMessageFromUri(Uri uri)
         {
-            base.OnNewIntent(intent);
-            if (intent.Data != null)
+            var crFileDescriptor = Forms.Context.ContentResolver.OpenFileDescriptor(uri, "r");
+            FileInputStream fis = new FileInputStream(crFileDescriptor.FileDescriptor);
+            StringBuilder message = new StringBuilder();
+            int ch;
+            while ((ch = fis.Read()) != -1)
             {
-                MessagingCenter.Send<string>(intent.Data.EncodedPath, "mru4uresponse");
-            }            
+                message.Append((char)ch);
+            }
+
+            return message.ToString();
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)

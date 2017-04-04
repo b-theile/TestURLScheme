@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -21,6 +16,11 @@ namespace TestURLScheme
             {
                 this.XMLData = System.Net.WebUtility.UrlDecode(response);
             });
+
+            MessagingCenter.Subscribe<string>(this, "fileresponse", response =>
+            {
+                this.XMLData = response;
+            });
         }
 
         private string _xmlData;
@@ -30,17 +30,30 @@ namespace TestURLScheme
             set { SetProperty(ref _xmlData, value); }
         }
 
-        private Command _startTestURL;
-        public ICommand StartTestURL
+        private Command _startTestURLCommand;
+        public ICommand StartTestURLCommand
         {
-            get { return _startTestURL = _startTestURL ?? new Command(StartTestURLExecute); }
+            get { return _startTestURLCommand = _startTestURLCommand ?? new Command(StartTestURLExecute); }
         }
 
         private void StartTestURLExecute()
         {
-            string urlString = "mru4urequest://mru/" + System.Net.WebUtility.UrlEncode(MainViewModel.xmlSendData);
+            string urlString = "mru4urequest://mru/" + System.Net.WebUtility.UrlEncode(xmlSendData);
             //Device.OpenUri(new Uri(urlString));
             MessagingCenter.Send<string>(urlString, "mru4urequest");
+        }
+
+        private Command _startTestFileExchangeCommand;
+        public ICommand StartTestFileExchangeCommand
+        {
+            get { return _startTestFileExchangeCommand = _startTestFileExchangeCommand ?? new Command(StartTestFileExchangeExecute); }
+        }
+
+        private void StartTestFileExchangeExecute()
+        {
+            var index = xmlSendData.IndexOf("<?xml");
+            string urlString = xmlSendData.Substring(index, xmlSendData.Length - index);
+            MessagingCenter.Send<string>(urlString, "filerequest");
         }
     }
 }

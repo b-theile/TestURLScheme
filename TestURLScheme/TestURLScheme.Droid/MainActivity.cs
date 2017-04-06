@@ -17,7 +17,7 @@ namespace TestURLScheme.Droid
         Categories = new[] { Intent.CategoryDefault },
         DataScheme = "content",
         DataMimeType = "*/*",
-        DataPathPatterns = new[] { ".*\\.ZIVAPP" },
+        DataPathPatterns = new[] { ".*\\.zivapp" },
         DataHost = "*")]
 
     public class MainActivity : FormsAppCompatActivity
@@ -36,7 +36,7 @@ namespace TestURLScheme.Droid
 
             if (Intent.Data != null)
             {
-                if (Intent.Data.LastPathSegment.Contains("ZIVAPP"))
+                if (Intent.Data.LastPathSegment.Contains("zivapp"))
                 {
                     string message = GetMessageFromUri(Intent.Data);
                     MessagingCenter.Send<string>(message, "fileresponse");

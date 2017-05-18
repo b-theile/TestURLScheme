@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Xamarin.Forms;
 
 namespace TestURLScheme.iOS
 {
@@ -25,7 +26,21 @@ namespace TestURLScheme.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
+            MessagingCenter.Subscribe<string>(this, "mru4urequest", urlString =>
+            {
+                NSUrl url = new NSUrl(urlString);
+                UIApplication.SharedApplication.OpenUrl(url);
+            });
+
             return base.FinishedLaunching(app, options);
+        }
+
+        public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            string message = System.Net.WebUtility.UrlDecode(url.AbsoluteString);
+            MessagingCenter.Send<string>(message, "mru4uresponse");
+
+            return true;
         }
     }
 }

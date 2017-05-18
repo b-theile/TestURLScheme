@@ -18,6 +18,10 @@
 
         <Button Grid.Row="0" Grid.Column="0" Text="URL" HorizontalOptions="FillAndExpand" Command="{Binding StartTestURLCommand}" />
         <Button Grid.Row="0" Grid.Column="1" Text="File" HorizontalOptions="FillAndExpand" Command="{Binding StartTestFileExchangeCommand}" />
-        <Editor Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding XMLData}" />
+        <!--<Editor IsEnabled="True" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding XMLData}" />-->
+        <ScrollView Grid.Row="1" Grid.ColumnSpan="2">
+            <Label Text="{Binding XMLData}" />
+        </ScrollView>
+
     </Grid>
 </ContentPage>

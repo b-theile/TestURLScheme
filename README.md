@@ -22,36 +22,42 @@ There the mru4urequest message is subscribed and catches the string creates a ne
 
 `{`
 
-    `Intent intent = new Intent(Intent.ActionView, Uri.Parse(urlString));`
+    Intent intent = new Intent(Intent.ActionView, Uri.Parse(urlString));
   
-    `StartActivityForResult(intent, MRU_REQUEST);`
+    StartActivityForResult(intent, MRU_REQUEST);
   
 `});`
 
 
-After that the MRU4u app shows up with Abgasmessung (REQ_MEAS_BIMSCHV) and Heizöl EL (FUEL_NAT_GAS). You should make your measurement and save it. If you have more than one measurement, the measurement is titled as TODO. Click on the measurement on the top left to select the other one(s). Measure. Save. Press "Confirm Save" to set the SetResult function, that writes back the data to the calling activity.
+After that the MRU4u app shows up with Abgasmessung (REQ_MEAS_BIMSCHV) and Erdgas (FUEL_NAT_GAS). You should make your measurement and save it. If you have more than one measurement, the measurement is titled as TODO. Click on the measurement on the top left to select the other one(s). Measure. Save. Press "Confirm Save" to set the SetResult function, that writes back the data to the calling activity.
 In the TestURLScheme App the SetResult of the MRU4u will invoke the OnActivityResult.
 
 `protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)`
-
 `{`
 
-    `base.OnActivityResult(requestCode, resultCode, data);`
+    base.OnActivityResult(requestCode, resultCode, data);
 
-    `if (requestCode == MRU_REQUEST)`
+    if (requestCode == MRU_REQUEST)
 
-    `{`
+    {
 
-        `if (data?.Data != null)`
+        if (data?.Data != null)
     
-        `{`
+        {
     
-            `MessagingCenter.Send<string>(data.Data.EncodedSchemeSpecificPart, "mru4uresponse");`
+            MessagingCenter.Send<string>(data.Data.EncodedSchemeSpecificPart, "mru4uresponse");
         
-        `}`       
+        }      
     
-`}`
+    }
 
 `}`
 
 The requestcode will be checked. The data (the xml SingleResult) will be passed to the Core projects, where it will be displayed on the screen.
+
+`MessagingCenter.Subscribe<string>(this, "mru4uresponse", (response) =>`
+`{`
+
+    this.XMLData = System.Net.WebUtility.UrlDecode(response);
+
+`});`

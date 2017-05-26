@@ -37,7 +37,7 @@ In the TestURLScheme App the `SetResult` of the MRU4u will invoke the `OnActivit
         }   
     }
 
-The `requestCode` will be checked. The data (the xml SingleResult) will be passed to the Core projects, where it will be displayed on the screen.
+The `requestCode` will be checked. The data (the xml SingleResult) will be passed to the Core project, where it will be displayed on the screen.
 
     MessagingCenter.Subscribe<string>(this, "mru4uresponse", (response) =>
     {
@@ -46,4 +46,32 @@ The `requestCode` will be checked. The data (the xml SingleResult) will be passe
     
 ### iOS
 
-TODO
+When pressing the URL button this string will be send to the iOS project:
+
+    string urlString = "mru4urequest://mru/" + System.Net.WebUtility.UrlEncode(xmlSendData);
+    MessagingCenter.Send<string>(urlString, "mru4urequest");
+
+In the iOS project the `mru4urequest` message is subscribed and catches the string. A new NSUrl is created with it and the `OpenUrl` function is called.
+
+    MessagingCenter.Subscribe<string>(this, "mru4urequest", urlString =>
+    {
+        NSUrl url = new NSUrl(urlString);
+        UIApplication.SharedApplication.OpenUrl(url);
+    });
+    
+After that the MRU4u app shows up with "Abgasmessung" (`REQ_MEAS_BIMSCHV`) and "Erdgas" (`FUEL_NAT_GAS`). You should make your measurement and save it. If you have more than one measurement, the measurement is titled as TODO. Click on the measurement button on the top left to select the left measurement(s). Measure. Save. Press "Confirm Save" to call the `OpenUrl` function, that writes back the data to the calling app.
+In the TestURLScheme App the `OpenUrl` of the MRU4u will invoke the `OpenUrl`.    
+    
+    public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+    {
+        string message = System.Net.WebUtility.UrlDecode(url.AbsoluteString);
+        MessagingCenter.Send<string>(message, "mru4uresponse");
+        return true;
+    }
+    
+The url string (the xml SingleResult) will be passed to the Core project, where it will be displayed on the screen.
+
+    MessagingCenter.Subscribe<string>(this, "mru4uresponse", (response) =>
+    {
+        this.XMLData = System.Net.WebUtility.UrlDecode(response);
+    });

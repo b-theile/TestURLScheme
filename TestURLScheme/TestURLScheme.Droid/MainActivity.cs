@@ -22,7 +22,9 @@ namespace TestURLScheme.Droid
 
     public class MainActivity : FormsAppCompatActivity
     {
-        private static int MRU_REQUEST = 1543;
+        private static readonly int MRU_REQUEST = 1543;
+
+        MainActivity _context;
 
         protected override void OnCreate(Bundle bundle)
         {           
@@ -31,6 +33,8 @@ namespace TestURLScheme.Droid
 
             base.OnCreate(bundle);
 
+            _context = this;
+            
             Forms.Init(this, bundle);
             LoadApplication(new App());
 
@@ -81,7 +85,7 @@ namespace TestURLScheme.Droid
                     e.PrintStackTrace();
                 }
 
-                Uri apkURI = Android.Support.V4.Content.FileProvider.GetUriForFile(Forms.Context.ApplicationContext, "com.testexchange.provider", file);
+                Uri apkURI = AndroidX.Core.Content.FileProvider.GetUriForFile(_context.ApplicationContext, "com.testexchange.provider", file);
 
                 Intent intent = new Intent(Intent.ActionView);
                 intent.SetDataAndType(apkURI, "MRUAPP");
@@ -92,7 +96,7 @@ namespace TestURLScheme.Droid
 
         private string GetMessageFromUri(Uri uri)
         {
-            var crFileDescriptor = Forms.Context.ContentResolver.OpenFileDescriptor(uri, "r");
+            var crFileDescriptor = _context.ContentResolver.OpenFileDescriptor(uri, "r");
             FileInputStream fis = new FileInputStream(crFileDescriptor.FileDescriptor);
             StringBuilder message = new StringBuilder();
             int ch;

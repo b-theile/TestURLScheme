@@ -59,5 +59,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>XSAppIconAssets</key>
+	<string>Media.xcassets/AppIcons.appiconset</string>
 </dict>
 </plist>

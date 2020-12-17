@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
@@ -8,14 +7,14 @@
 
   <Identity
     Name="464f4dd6-4add-4764-9268-cc9c6f5665d4"
-    Publisher="CN=b-schiwek"
+    Publisher="CN=o-theile"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="464f4dd6-4add-4764-9268-cc9c6f5665d4" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>TestURLScheme.UWP</DisplayName>
-    <PublisherDisplayName>b-schiwek</PublisherDisplayName>
+    <PublisherDisplayName>o-theile</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -40,10 +39,30 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+
+      <!--<Extensions>
+        <uap:Extension Category="windows.shareTarget">
+          <uap:ShareTarget Description="mru4uresponse">
+            <uap:SupportedFileTypes>
+              <uap:SupportsAnyFileType/>
+            </uap:SupportedFileTypes>
+          </uap:ShareTarget>
+        </uap:Extension>
+      </Extensions>-->
+
+      <Extensions>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="mruresponse">
+            <uap:Logo>Assests\Logo.png</uap:Logo>
+          </uap:Protocol>
+        </uap:Extension>        
+      </Extensions>
     </Application>
   </Applications>
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <Capability Name="internetClientServer"/>
+    <Capability Name="privateNetworkClientServer"/>
   </Capabilities>
 </Package>

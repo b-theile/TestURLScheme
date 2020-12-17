@@ -22,9 +22,7 @@ namespace TestURLScheme.Droid
 
     public class MainActivity : FormsAppCompatActivity
     {
-        private static readonly int MRU_REQUEST = 1543;
-
-        MainActivity _context;
+        private const int _mRU_REQUEST = 1543;
 
         protected override void OnCreate(Bundle bundle)
         {           
@@ -33,8 +31,6 @@ namespace TestURLScheme.Droid
 
             base.OnCreate(bundle);
 
-            _context = this;
-            
             Forms.Init(this, bundle);
             LoadApplication(new App());
 
@@ -54,7 +50,7 @@ namespace TestURLScheme.Droid
             MessagingCenter.Subscribe<string>(this, "mru4urequest", urlString =>
             {
                 Intent intent = new Intent(Intent.ActionView, Uri.Parse(urlString));
-                StartActivityForResult(intent, MRU_REQUEST);
+                StartActivityForResult(intent, _mRU_REQUEST);
             });
 
             MessagingCenter.Subscribe<string>(this, "filerequest", urlString =>
@@ -85,7 +81,7 @@ namespace TestURLScheme.Droid
                     e.PrintStackTrace();
                 }
 
-                Uri apkURI = AndroidX.Core.Content.FileProvider.GetUriForFile(_context.ApplicationContext, "com.testexchange.provider", file);
+                Uri apkURI = AndroidX.Core.Content.FileProvider.GetUriForFile(this.ApplicationContext, "com.testexchange.provider", file);
 
                 Intent intent = new Intent(Intent.ActionView);
                 intent.SetDataAndType(apkURI, "MRUAPP");
@@ -96,8 +92,8 @@ namespace TestURLScheme.Droid
 
         private string GetMessageFromUri(Uri uri)
         {
-            var crFileDescriptor = _context.ContentResolver.OpenFileDescriptor(uri, "r");
-            FileInputStream fis = new FileInputStream(crFileDescriptor.FileDescriptor);
+            var crFileDescriptor = this.ContentResolver.OpenFileDescriptor(uri, "r");
+            using FileInputStream fis = new FileInputStream(crFileDescriptor.FileDescriptor);
             StringBuilder message = new StringBuilder();
             int ch;
             while ((ch = fis.Read()) != -1)
@@ -112,7 +108,7 @@ namespace TestURLScheme.Droid
         {
             base.OnActivityResult(requestCode, resultCode, data);
 
-            if (requestCode == MRU_REQUEST)
+            if (requestCode == _mRU_REQUEST)
             {
                 if (data?.Data != null)
                 {

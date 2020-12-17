@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿
 using Foundation;
 using UIKit;
 using Xamarin.Forms;
@@ -23,7 +20,7 @@ namespace TestURLScheme.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            global::Xamarin.Forms.Forms.Init();
+            Forms.Init();
             LoadApplication(new App());
 
             MessagingCenter.Subscribe<string>(this, "mru4urequest", urlString =>

@@ -55,8 +55,8 @@
           <uap:Protocol Name="mruresponse">
             <uap:Logo>Assests\Logo.png</uap:Logo>
           </uap:Protocol>
-        </uap:Extension>        
-      </Extensions>
+        </uap:Extension>
+        </Extensions>
     </Application>
   </Applications>
 

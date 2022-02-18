@@ -1,4 +1,4 @@
-﻿using Windows.ApplicationModel.DataTransfer;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 
 namespace TestURLScheme.UWP.Services

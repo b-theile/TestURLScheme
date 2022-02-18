@@ -1,4 +1,4 @@
-﻿
+﻿using TestURLScheme.Views;
 using Xamarin.Forms;
 
 namespace TestURLScheme
@@ -7,7 +7,7 @@ namespace TestURLScheme
     {
         public App()
         {
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new NavigationPage(new SingleStartPage());
         }
 
         protected override void OnStart()

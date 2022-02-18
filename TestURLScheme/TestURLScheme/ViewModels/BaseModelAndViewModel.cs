@@ -2,14 +2,19 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TestURLScheme
+namespace TestURLScheme.ViewModels
 {
     public class BaseModelAndViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        ~BaseModelAndViewModel()
+        {
+            Dispose(false);
+        }
+
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            if (Object.Equals(storage, value))
+            if (Equals(storage, value))
                 return false;
             storage = value;
             OnPropertyChanged(propertyName);
@@ -17,6 +22,9 @@ namespace TestURLScheme
         }
 
         protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+
+        #region Dispose
 
         public void Dispose()
         {
@@ -27,9 +35,6 @@ namespace TestURLScheme
         protected virtual void Dispose(bool disposing)
         { }
 
-        ~BaseModelAndViewModel()
-        {
-            Dispose(false);
-        }
+        #endregion Dispose
     }
 }

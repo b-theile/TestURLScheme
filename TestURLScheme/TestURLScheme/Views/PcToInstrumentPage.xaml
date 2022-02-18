@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestURLScheme.Views.PcToInstrumentPage">
+    <ContentPage.Content>
+        <Grid Padding="8"
+              RowDefinitions="Auto,*">
+
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="*,*,*">
+                
+                <Button Grid.Column="0"
+                        Text="URL"
+                        HorizontalOptions="FillAndExpand"
+                        Command="{Binding StartTestURLCommand}"/>
+                <Button Grid.Column="1"
+                        Text="File"
+                        HorizontalOptions="FillAndExpand"
+                        Command="{Binding StartTestFileExchangeCommand}">
+                    <Button.IsVisible>
+                        <OnPlatform x:TypeArguments="x:Boolean">
+                            <On Platform="Android">true</On>
+                            <On Platform="iOS">false</On>
+                            <On Platform="UWP">true</On>
+                        </OnPlatform>
+                    </Button.IsVisible>
+                </Button>
+                <Button Grid.Column="2"
+                        Text="Tcp" HorizontalOptions="FillAndExpand"
+                        Command="{Binding SendTcpRequestCommand}"/>
+            </Grid>
+
+            <ScrollView Grid.Row="1">
+                <Label Text="{Binding XmlPcToInstrumentData}" />
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
